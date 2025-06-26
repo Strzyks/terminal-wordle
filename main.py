@@ -3,23 +3,21 @@
 
 #imports
 import random
+from collections import Counter
 
 #lists
 Word = [
-    "aktor", "banan", "brzeg", "cegła", "cukier", "dolar", "droga", "ducha", "farba", "fotel",
-    "głowa", "guzik", "hotel", "iskra", "jazda", "kabel", "karta", "klucz", "kolej", "komik",
-    "koszt", "kreda", "lampa", "ludek", "łódka", "mapka", "masło", "miara", "miska", "model",
-    "motyl", "mucha", "mysza", "nocny", "norka", "obiad", "okres", "opcja", "owoc",  "panda",
-    "patyk", "piłka", "pismo", "plama", "pokój", "porty", "proza", "prąd",  "robot", "rolka",
-    "rondo", "rybak", "rzeka", "sarna", "serce", "sklep", "słowo", "smoki", "sojusz", "sport",
-    "start", "stres", "szafa", "szlak", "szopa", "szyba", "tempo", "torba", "trawa", "treść",
-    "ulica", "upiór", "uroda", "wałek", "wazon", "wirus", "worek", "wstęp", "wtyka", "wzrok",
-    "ząbek", "zegar", "zgoda", "ziarna", "złota", "znicz", "zwrot", "żabka", "żarów", "żmija",
-    "życie", "żwire", "żyzna", "żółta", "żeton", "bufet", "klasa", "grupa", "tempo", "druk", 
-    "mleko", "kwiat", "bilet", "piase", "płasz", "linie", "pliki", "korek", "czapa", "kreda",
-    "kotek", "pasja", "torus", "luzak", "taler", "flaga", "kamera", "kubek", "puder", "notka",
-    "sanki", "blok",  "kocyk", "winda", "plaza", "piana", "tramp", "szron", "kącik", "torba",
-    "zapas", "notat", "żarno", "muzyk", "kurcz", "baton", "zwóz",  "luzik", "grill", "pupil"
+    "aktor","banet","bufet","bilet","baton","brzeg","bufor","cegła","chleb","cukry",
+    "dolar","droga","ducha","fotel","grupa","guzik","głowa","hotel","iskra",
+    "kabel","klucz","kolej","koszt","kwiat","ludek","mleko","model","motyl",
+    "mucha","muzyk","mysza","norka","obiad","okres","opcja","owocą","patyk","pazur",
+    "piłka","pismo","płasz","pokój","porty","proza","puder","ratus",
+    "rolka","rybak","rzeka","sklep","smoki","sport","szafa",
+    "szlak","szopa","szron","szyba","taler","tempo","torba","tramp","treść","ulica",
+    "upiór","uroda","wążyk","wazon","wirus","worek","wstęp","wtycz","wtyka","wzrok",
+    "ząbek","zegar","zgoda","zwrot","żabka","żeton","żmija","żółta","życie",
+    "dźwig","jodły","kryształ","łapka","łuków",
+    "męska","ogród","pasja","rzeźb","upiór"
 ]
 wrongwords = ["1","2","3","#","@","$","_","&","-","+","(",")","/","*","'",":",";","!","?"]
 
@@ -29,9 +27,41 @@ emotes = ["🟩", "🟨", "⬛"]
 tryies = 0
 can_write_result = True
 
+print("🟩-dobra litera w dobrym miejscu, ")
+print("🟨-dobra litera w złym miejscu, ")
+print("⬛-zła litera")
+
+print("wpisz h dla pomocy")
+
+print("")
+
+
 #main loop
 while True:
-    yourwrite = str(input("Napisz słowo: "))
+    def lose():
+        print(f"przegrana, prawidłowe słowo: {trueword}")
+
+    def win():
+        print("Wygrałeś!!!")
+
+    def white_flag():
+        print(f"poddałeś się, prawidłowe słowo to: {trueword}")
+
+    yourwrite = str(input("Napisz słowo: ")).lower()
+    letter_counts = Counter(yourwrite)
+
+    if yourwrite == "h":
+        print("")
+        print("w - poddaje się")
+        print("q - wychodzi z gry")
+        print("")
+
+    if yourwrite == "w":
+        continue
+
+    if yourwrite == "q":
+        print("wychodzę z gry....")
+        break
 
     #check the wrong letters in the text
     for znak in wrongwords:
@@ -43,31 +73,37 @@ while True:
     if len(yourwrite) >5:
         print("Za dużo liter")
         continue
+
     if len(yourwrite) <5:
         print("za mało liter")
         continue
     
     #win
     if yourwrite == trueword:
-        print("Wygrałeś!!!")
-        break
+        win()
+        continue
+
     #lose
     if tryies == 5 and yourwrite != trueword:
-        print(f"przegrana, prawidłowe słowo: {trueword}")
-        break
-    
-    #emotes system
-    result = []
-    for i in range(5):
-        if yourwrite[i] == trueword[i]:
-            result.append(emotes[0])
-        elif yourwrite[i] in trueword:
-            result.append(emotes[1])
-        else:
-            result.append(emotes[2])
+        lose()
+        continue
 
-    #write in the screen results
-    print("".join(result))
+    #check if be more letters than 2
+    if any(count >= 3 for count in letter_counts.values()):
+        print("Przepraszamy, nie możesz używać tej samej litery 3 razy lub więcej.")
+    else:
+        #emotes system
+        result = []
+        for i in range(5):
+            if yourwrite[i] == trueword[i]:
+                result.append(emotes[0])
+            elif yourwrite[i] in trueword:
+                result.append(emotes[1])
+            else:
+                result.append(emotes[2])
+
+        #write in the screen results
+        print("".join(result))
 
     #tries
     tryies+=1
